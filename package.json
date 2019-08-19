@@ -1,0 +1,15 @@
+{
+  "name": "harmonycore",
+  "version": "0.0.1",
+  "description": "MLP-NEXT",
+  "main": "index.js",
+  "scripts": {},
+  "author": "Jykinturah",
+  "license": "MIT",
+  "dependencies": {
+    "bluebird": "^3.5.2",
+    "chance": "^1.0.16",
+    "discord.js": "^11.4.2"
+  },
+  "devDependencies": {}
+}

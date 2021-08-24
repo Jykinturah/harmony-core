@@ -3,13 +3,42 @@
 
 'use strict';
 
-const Discord = require("discord.js");
+const { Client, Intents } = require('discord.js');
+const { REST } = require('@discordjs/rest');
+const { Routes } = require('discord-api-types/v9');
+const harmsIntents = new Intents();
 const Chance = require("chance");
 var chance = new Chance();
 var replies = require("./replies.json");
 var config = require("./config.json");
 const CRIT_MULT = config.crit;
 const ROLL_DESC = false;
+const rest = new REST({ version: '9' }).setToken(config.clientToken);
+
+/** Intents */
+harmsIntents.add( Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS )
+
+/** '/' Commands */
+const commands = [{
+  name: 'harm',
+  description: 'Give Harmony Core a poke.'
+}];
+
+/** REST call to register slash commands */
+(async () => {
+  try {
+    console.log('Started refreshing application (/) commands.');
+
+    await rest.put(
+      Routes.applicationGuildCommands(config.clientId, config.guildId),
+      { body: commands },
+    );
+
+    console.log('Successfully reloaded application (/) commands.');
+  } catch (error) {
+    console.error(error);
+  }
+})();
 
 function reply(author) {
     return replies[Math.floor(Math.random() * replies.length)].replace("{usr}", author);
@@ -151,29 +180,36 @@ function rollDiceString(exp){
   }
 }
 
-const client = new Discord.Client();
+const client = new Client({ intents: harmsIntents });
 
 client.on('ready',() => {
   console.log("Harmony Core online.");
-  client.user.setActivity("queries...",{type:"LISTENING"}).catch(err=>{throw err;});
+  client.user.setActivity("queries...",{type:"LISTENING"});
   console.log("https://discordapp.com/oauth2/authorize?client_id="+client.user.id+"&scope=bot");
 });
 
 /* jshint ignore:start */
-client.on('message', async message => {
-  if (message.isMentioned(client.user)){
-    return message.channel.send(reply(message.author)).catch(err => {
+client.on('messageCreate', async message => {
+  if (message.mentions.users.has(client.user.id)){
+    return message.channel.send(reply("<@" + message.author + ">")).catch(err => {
       console.log(err);
     });
   }
   if(message.author.bot) return;
   if(message.content.indexOf(config.prefix)!==0) return;
   if(message.content.toLowerCase().startsWith("$roll")){
-    return message.channel.send(message.author + " " + rollDiceString(message.content.substring(5))).catch(err => {
+    return message.channel.send("<@" + message.author +"> " + rollDiceString(message.content.substring(5))).catch(err => {
       console.log(err);
     });;
   }
 })
+
+client.on('interactionCreate', async interaction => {
+  if (!interaction.isCommand()) return;
+  if (interaction.commandName === 'harm') {
+    await interaction.reply(reply("<@"+interaction.user.id+">"));
+  }
+});
 /* jshint ignore:end */
 
-client.login(config.clientId);
+client.login(config.clientToken);

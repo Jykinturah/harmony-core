@@ -1,5 +1,7 @@
 {
-  "clientId": "<BOT_TOKEN_HERE>",
+  "clientToken": "<BOT_TOKEN_HERE>",
+  "guildId": "<GUILD_ID_HERE>",
+  "clientId": "<CLIENT_ID_HERE>",
   "prefix": "<PREFIX_CHAR_HERE>",
   "crit":<CRIT_MULTIPLIER_VALUE>,
   "admin": [

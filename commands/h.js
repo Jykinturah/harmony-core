@@ -112,8 +112,8 @@ function rollDiceString(exp){
     dice = sortCollapseDice(dice);
     
     for(var i = 0; i < dice.length; i++){
-      if(dice.count > 500) return "**Are you trying to _test_ me? Cease at once.**";
-      if(dice.sides > 1000) return "**There is no valid reason to roll a dice with " + dice.sides + " sides. Don't be ridiculous.**";
+      if(dice[i].count > 500) return "**Are you trying to _test_ me? Cease at once.**";
+      if(dice[i].sides > 1000) return "**There is no valid reason to roll a dice with " + dice[i].sides + " sides. Don't be ridiculous.**";
     }
 
     var max = 0;

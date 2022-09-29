@@ -6,9 +6,7 @@
 const { Client, Collection, Routes, REST, GatewayIntentBits, SlashCommandBuilder } = require('discord.js');
 const fs = require('node:fs');
 const path = require('node:path');
-var config = require("./config.json");
 const { clientToken } = require('./config.json');
-const rest = new REST({ version: '10' }).setToken(clientToken);
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMessageReactions, GatewayIntentBits.GuildEmojisAndStickers] });
 
